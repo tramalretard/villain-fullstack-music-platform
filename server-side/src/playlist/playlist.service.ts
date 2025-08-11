@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { PlaylistDto } from './dto/playlist.dto';
-import { PrismaClient } from 'prisma/generated';
 
 const MARKED_TRACKS_PLAYLIST_NAME = 'Отмеченные треки';
 
