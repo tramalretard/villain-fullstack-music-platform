@@ -83,7 +83,6 @@ export class AuthService {
         },
         include: {
           playlists: true,
-          favoriteTracks: true,
           favoriteAlbums: true,
         },
       });

@@ -7,8 +7,6 @@ import {
   Res,
   UnauthorizedException,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
@@ -19,7 +17,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UsePipes(new ValidationPipe())
   @Post('login')
   async login(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response) {
     const { refreshToken, ...response } = await this.authService.login(dto);
@@ -29,7 +26,6 @@ export class AuthController {
     return response;
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('register')
   async register(
     @Body() dto: AuthDto,
@@ -42,7 +38,6 @@ export class AuthController {
     return response;
   }
 
-  @UsePipes(new ValidationPipe())
   @Post('login/access-token')
   async getNewTokens(
     @Req() req: Request,
