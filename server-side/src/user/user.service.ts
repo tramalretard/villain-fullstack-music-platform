@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { UserDto } from './dto/user.dto';
 import { hash } from 'argon2';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly fileService: FileService,
+  ) {}
 
   async createUserService(dto: UserDto) {
     return this.prisma.user.create({
@@ -30,6 +34,16 @@ export class UserService {
       where: {
         email,
       },
+    });
+  }
+
+  async updateAvatar(userId: string, avatarFile: Express.Multer.File) {
+    const { url } = await this.fileService.saveFile(avatarFile, 'avatars');
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { avatar: url },
+      select: { avatar: true },
     });
   }
 }
