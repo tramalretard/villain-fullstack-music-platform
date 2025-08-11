@@ -57,13 +57,26 @@ model Playlist {
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
 
-  tracks Track[]
+  tracks TracksOnPlaylists[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@index([userId])
   @@map("playlists")
+}
+
+model TracksOnPlaylists {
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  playlistId String   @map("playlist_id")
+
+  track   Track  @relation(fields: [trackId], references: [id])
+  trackId String @map("track_id")
+
+  addedAt DateTime @default(now()) @map("added_at")
+
+  @@id([playlistId, trackId])
+  @@map("tracks_on_playlists")
 }
 
 model Track {
@@ -84,7 +97,7 @@ model Track {
   album   Album?  @relation(fields: [albumId], references: [id])
   albumId String? @map("album_id")
 
-  playlists Playlist[]
+  playlists TracksOnPlaylists[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

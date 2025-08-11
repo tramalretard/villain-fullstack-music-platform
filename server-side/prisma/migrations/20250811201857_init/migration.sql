@@ -39,6 +39,15 @@ CREATE TABLE "playlists" (
 );
 
 -- CreateTable
+CREATE TABLE "tracks_on_playlists" (
+    "playlist_id" TEXT NOT NULL,
+    "track_id" TEXT NOT NULL,
+    "added_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "tracks_on_playlists_pkey" PRIMARY KEY ("playlist_id","track_id")
+);
+
+-- CreateTable
 CREATE TABLE "tracks" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -67,14 +76,6 @@ CREATE TABLE "albums" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "albums_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "_PlaylistToTrack" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_PlaylistToTrack_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateTable
@@ -112,9 +113,6 @@ CREATE INDEX "tracks_album_id_idx" ON "tracks"("album_id");
 CREATE INDEX "albums_artist_id_idx" ON "albums"("artist_id");
 
 -- CreateIndex
-CREATE INDEX "_PlaylistToTrack_B_index" ON "_PlaylistToTrack"("B");
-
--- CreateIndex
 CREATE INDEX "_UserFavoriteTracks_B_index" ON "_UserFavoriteTracks"("B");
 
 -- CreateIndex
@@ -127,6 +125,12 @@ ALTER TABLE "artist_profiles" ADD CONSTRAINT "artist_profiles_user_id_fkey" FORE
 ALTER TABLE "playlists" ADD CONSTRAINT "playlists_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "tracks_on_playlists" ADD CONSTRAINT "tracks_on_playlists_playlist_id_fkey" FOREIGN KEY ("playlist_id") REFERENCES "playlists"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tracks_on_playlists" ADD CONSTRAINT "tracks_on_playlists_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "tracks"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "tracks" ADD CONSTRAINT "tracks_artistId_fkey" FOREIGN KEY ("artistId") REFERENCES "artist_profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -134,12 +138,6 @@ ALTER TABLE "tracks" ADD CONSTRAINT "tracks_album_id_fkey" FOREIGN KEY ("album_i
 
 -- AddForeignKey
 ALTER TABLE "albums" ADD CONSTRAINT "albums_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "artist_profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PlaylistToTrack" ADD CONSTRAINT "_PlaylistToTrack_A_fkey" FOREIGN KEY ("A") REFERENCES "playlists"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PlaylistToTrack" ADD CONSTRAINT "_PlaylistToTrack_B_fkey" FOREIGN KEY ("B") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserFavoriteTracks" ADD CONSTRAINT "_UserFavoriteTracks_A_fkey" FOREIGN KEY ("A") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
