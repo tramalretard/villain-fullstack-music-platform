@@ -18,6 +18,8 @@ model User {
 
   playlists Playlist[]
 
+  artistProfile ArtistProfile?
+
   favoriteTracks Track[] @relation("UserFavoriteTracks")
   favoriteAlbums Album[] @relation("UserFavoriteAlbums")
 
@@ -29,15 +31,13 @@ model User {
   @@map("users")
 }
 
-model Artist {
+model ArtistProfile {
   id String @id @default(cuid())
 
-  email    String   @unique
-  name     String   @unique
-  password String
-  avatar   String   @default("/uploads/no-artist-image.png")
-  listener Int      @default(0)
-  role     UserRole @default(ARTIST)
+  listener Int @default(0)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @map("user_id")
 
   albums Album[]
   tracks Track[]
@@ -45,7 +45,7 @@ model Artist {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("artists")
+  @@map("artist_profiles")
 }
 
 model Playlist {
@@ -78,7 +78,7 @@ model Track {
 
   favoritedBy User[] @relation("UserFavoriteTracks")
 
-  artist   Artist @relation(fields: [artistId], references: [id])
+  artist   ArtistProfile @relation(fields: [artistId], references: [id])
   artistId String
 
   album   Album?  @relation(fields: [albumId], references: [id])
@@ -102,8 +102,8 @@ model Album {
   isExplicit Boolean @default(false)
   listener   Int     @default(0)
 
-  artist   Artist @relation(fields: [artistId], references: [id])
-  artistId String @map("artist_id")
+  artist   ArtistProfile @relation(fields: [artistId], references: [id])
+  artistId String        @map("artist_id")
 
   favoritedBy User[]  @relation("UserFavoriteAlbums")
   tracks      Track[]
