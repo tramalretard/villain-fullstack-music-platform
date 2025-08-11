@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { PlaylistDto } from './dto/playlist.dto';
+import { PrismaClient } from 'prisma/generated';
 
 const MARKED_TRACKS_PLAYLIST_NAME = 'Отмеченные треки';
 
@@ -150,6 +151,25 @@ export class PlaylistService {
     });
   }
 
+  async removeTrackFromMarkedPlaylistService(trackId: string, userId: string) {
+    const markedPlaylist = await this.prisma.playlist.findFirst({
+      where: {
+        name: MARKED_TRACKS_PLAYLIST_NAME,
+        userId: userId,
+      },
+    });
+
+    if (!markedPlaylist) {
+      throw new NotFoundException('Плейлист отмеченных треков не найден');
+    }
+
+    return this.removeTrackFromPlaylistService(
+      markedPlaylist.id,
+      trackId,
+      userId,
+    );
+  }
+
   async addTrackToPlaylistService(
     playlistId: string,
     trackId: string,
@@ -181,5 +201,32 @@ export class PlaylistService {
         },
       },
     });
+  }
+  async removeTrackFromPlaylistService(
+    playlistId: string,
+    trackId: string,
+    currentUserId: string,
+  ) {
+    const playlist = await this.prisma.playlist.findUnique({
+      where: { id: playlistId },
+    });
+
+    if (!playlist) throw new NotFoundException('Плейлист не найден');
+
+    if (playlist.userId !== currentUserId)
+      throw new ForbiddenException(
+        'У вас нет прав на редактирование этого плейлиста',
+      );
+
+    await this.prisma.tracksOnPlaylists.delete({
+      where: {
+        playlistId_trackId: {
+          playlistId: playlistId,
+          trackId: trackId,
+        },
+      },
+    });
+
+    return { message: 'Трек успешно удален' };
   }
 }

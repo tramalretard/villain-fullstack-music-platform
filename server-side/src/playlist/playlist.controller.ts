@@ -74,6 +74,18 @@ export class PlaylistController {
   }
 
   @Auth()
+  @Delete('remove-track/marked')
+  async removeTrackFromMarked(
+    @CurrentUser('id') userId: string,
+    @Body() dto: AddTrackDto,
+  ) {
+    return this.playlistService.removeTrackFromMarkedPlaylistService(
+      dto.trackId,
+      userId,
+    );
+  }
+
+  @Auth()
   @Patch(':playlistId/add-track')
   async addTrackToPlaylist(
     @Param('playlistId') playlistId: string,
@@ -81,6 +93,20 @@ export class PlaylistController {
     @Body() dto: AddTrackDto,
   ) {
     return this.playlistService.addTrackToPlaylistService(
+      playlistId,
+      dto.trackId,
+      userId,
+    );
+  }
+
+  @Auth()
+  @Delete(':playlistId/remove-track')
+  async removeTrackFromPlaylist(
+    @Param('playlistId') playlistId: string,
+    @CurrentUser('id') userId: string,
+    @Body() dto: AddTrackDto,
+  ) {
+    return this.playlistService.removeTrackFromPlaylistService(
       playlistId,
       dto.trackId,
       userId,
