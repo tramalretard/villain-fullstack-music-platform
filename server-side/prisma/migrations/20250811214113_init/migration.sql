@@ -19,6 +19,7 @@ CREATE TABLE "users" (
 CREATE TABLE "artist_profiles" (
     "id" TEXT NOT NULL,
     "listener" INTEGER NOT NULL DEFAULT 0,
+    "imageSrc" TEXT NOT NULL DEFAULT '/uploads/no-artist-image.png',
     "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -79,14 +80,6 @@ CREATE TABLE "albums" (
 );
 
 -- CreateTable
-CREATE TABLE "_UserFavoriteTracks" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-
-    CONSTRAINT "_UserFavoriteTracks_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
 CREATE TABLE "_UserFavoriteAlbums" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -110,10 +103,10 @@ CREATE INDEX "tracks_artistId_idx" ON "tracks"("artistId");
 CREATE INDEX "tracks_album_id_idx" ON "tracks"("album_id");
 
 -- CreateIndex
-CREATE INDEX "albums_artist_id_idx" ON "albums"("artist_id");
+CREATE UNIQUE INDEX "artist_track_name_unique" ON "tracks"("artistId", "name");
 
 -- CreateIndex
-CREATE INDEX "_UserFavoriteTracks_B_index" ON "_UserFavoriteTracks"("B");
+CREATE INDEX "albums_artist_id_idx" ON "albums"("artist_id");
 
 -- CreateIndex
 CREATE INDEX "_UserFavoriteAlbums_B_index" ON "_UserFavoriteAlbums"("B");
@@ -138,12 +131,6 @@ ALTER TABLE "tracks" ADD CONSTRAINT "tracks_album_id_fkey" FOREIGN KEY ("album_i
 
 -- AddForeignKey
 ALTER TABLE "albums" ADD CONSTRAINT "albums_artist_id_fkey" FOREIGN KEY ("artist_id") REFERENCES "artist_profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_UserFavoriteTracks" ADD CONSTRAINT "_UserFavoriteTracks_A_fkey" FOREIGN KEY ("A") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_UserFavoriteTracks" ADD CONSTRAINT "_UserFavoriteTracks_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserFavoriteAlbums" ADD CONSTRAINT "_UserFavoriteAlbums_A_fkey" FOREIGN KEY ("A") REFERENCES "albums"("id") ON DELETE CASCADE ON UPDATE CASCADE;
