@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { TrackModule } from './track/track.module';
 import { FileModule } from './file/file.module';
+import { ArtistModule } from './artist/artist.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -13,6 +14,7 @@ import { FileModule } from './file/file.module';
     PlaylistModule,
     TrackModule,
     FileModule,
+    ArtistModule,
   ],
 })
 export class AppModule {}
