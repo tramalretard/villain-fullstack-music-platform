@@ -160,7 +160,7 @@ export class TrackService {
 
     if (track.status === 'PUBLISHED') {
       throw new ForbiddenException(
-        'Нельзя редактировать обложку у уже опубликованного трек',
+        'Нельзя редактировать обложку у уже опубликованного трека',
       );
     }
 
