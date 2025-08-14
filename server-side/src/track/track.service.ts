@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -32,6 +33,7 @@ export class TrackService {
     if (!track) {
       throw new NotFoundException('Трек не найден');
     }
+
     return track;
   }
 
@@ -43,6 +45,7 @@ export class TrackService {
     const artistProfile = await this.prisma.artistProfile.findUnique({
       where: { userId },
     });
+
     if (!artistProfile) {
       throw new ForbiddenException('Загружать треки могут только исполнители');
     }
@@ -62,6 +65,8 @@ export class TrackService {
           duration: duration,
           audioSrc: audioUrl,
           artistId: artistProfile.id,
+          isExplicit: dto.isExplicit,
+          albumId: dto.albumId,
         },
       });
       return track;
@@ -93,6 +98,12 @@ export class TrackService {
         'У вас нет прав на редактирование этого трека',
       );
 
+    if (track.status === 'PUBLISHED') {
+      throw new ForbiddenException(
+        'Нельзя редактировать уже опубликованный трек',
+      );
+    }
+
     return this.prisma.track.update({
       where: { id: trackId },
       data: dto,
@@ -107,6 +118,10 @@ export class TrackService {
 
     if (!artistProfile || track.artistId !== artistProfile.id)
       throw new ForbiddenException('У вас нет прав на удаление этого трека');
+
+    if (track.status === 'PUBLISHED') {
+      throw new ForbiddenException('Нельзя удалить уже опубликованный трек');
+    }
 
     await this.prisma.track.delete({ where: { id: trackId } });
     return true;
@@ -128,7 +143,7 @@ export class TrackService {
     return { message: 'Трек добавлен' };
   }
 
-  async updateImageService(
+  async updateImageTrackService(
     trackId: string,
     userId: string,
     imageFile: Express.Multer.File,
@@ -143,9 +158,9 @@ export class TrackService {
     if (!artistProfile)
       throw new ForbiddenException('Профиль артиста не найден');
 
-    if (track.artistId !== artistProfile.id) {
+    if (track.status === 'PUBLISHED') {
       throw new ForbiddenException(
-        'У вас нет прав на редактирование этого альбома',
+        'Нельзя редактировать обложку у уже опубликованного трек',
       );
     }
 
@@ -154,6 +169,75 @@ export class TrackService {
     return this.prisma.track.update({
       where: { id: trackId },
       data: { imageSrc: url },
+    });
+  }
+
+  async submitForPublicationService(trackId: string, userId: string) {
+    const [track, artistProfile] = await Promise.all([
+      this.prisma.track.findUnique({ where: { id: trackId } }),
+      this.prisma.artistProfile.findUnique({ where: { userId } }),
+    ]);
+
+    if (!track || !artistProfile || track.artistId !== artistProfile.id) {
+      throw new ForbiddenException(
+        'У вас нет прав на управление этим треком, либо вы трек не найден',
+      );
+    }
+
+    if (track.status !== 'DRAFT') {
+      throw new BadRequestException(
+        `Можно опубликовать только трек в статусе DRAFT. Текущий статус: ${track.status}`,
+      );
+    }
+
+    return this.prisma.track.update({
+      where: { id: trackId },
+      data: { status: 'PENDING_REVIEW' },
+    });
+  }
+
+  async assignTrackToAlbumService(
+    trackId: string,
+    albumId: string,
+    userId: string,
+  ) {
+    const [track, album, artistProfile] = await Promise.all([
+      this.prisma.track.findUnique({ where: { id: trackId } }),
+      this.prisma.album.findUnique({ where: { id: albumId } }),
+      this.prisma.artistProfile.findUnique({ where: { userId } }),
+    ]);
+
+    if (!track) throw new NotFoundException('Трек не найден');
+    if (!album) throw new NotFoundException('Альбом не найден');
+    if (!artistProfile)
+      throw new ForbiddenException('Профиль артиста не найден');
+
+    if (
+      track.artistId !== artistProfile.id ||
+      album.artistId !== artistProfile.id
+    ) {
+      throw new ForbiddenException(
+        'У вас нет прав для выполнения этого действия',
+      );
+    }
+
+    if (track.status === 'PUBLISHED' || album.status === 'PUBLISHED') {
+      throw new ConflictException(
+        'Нельзя добавлять треки в уже опубликованный альбом, или привязывать уже опубликованный сингл',
+      );
+    }
+
+    if (track.albumId) {
+      throw new ConflictException(
+        `Этот трек уже является частью альбома с ID: ${track.albumId}`,
+      );
+    }
+
+    return this.prisma.track.update({
+      where: { id: trackId },
+      data: {
+        albumId: albumId,
+      },
     });
   }
 }

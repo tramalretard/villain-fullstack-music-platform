@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('ARTIST', 'USER', 'ADMIN');
 
+-- CreateEnum
+CREATE TYPE "ContentStatus" AS ENUM ('DRAFT', 'PENDING_REVIEW', 'PUBLISHED', 'ARCHIVED');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -61,6 +64,7 @@ CREATE TABLE "tracks" (
     "isExplicit" BOOLEAN NOT NULL DEFAULT false,
     "artistId" TEXT NOT NULL,
     "album_id" TEXT,
+    "status" "ContentStatus" NOT NULL DEFAULT 'DRAFT',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -75,6 +79,7 @@ CREATE TABLE "albums" (
     "isExplicit" BOOLEAN NOT NULL DEFAULT false,
     "listener" INTEGER NOT NULL DEFAULT 0,
     "artist_id" TEXT NOT NULL,
+    "status" "ContentStatus" NOT NULL DEFAULT 'DRAFT',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -109,6 +114,9 @@ CREATE UNIQUE INDEX "artist_track_name_unique" ON "tracks"("artistId", "name");
 
 -- CreateIndex
 CREATE INDEX "albums_artist_id_idx" ON "albums"("artist_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "artist_album_name_unique" ON "albums"("artist_id", "name");
 
 -- CreateIndex
 CREATE INDEX "_UserFavoriteAlbums_B_index" ON "_UserFavoriteAlbums"("B");

@@ -99,6 +99,8 @@ model Track {
 
   playlists TracksOnPlaylists[]
 
+  status ContentStatus @default(DRAFT)
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -122,9 +124,12 @@ model Album {
   favoritedBy User[]  @relation("UserFavoriteAlbums")
   tracks      Track[]
 
+  status ContentStatus @default(DRAFT)
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  @@unique([artistId, name], map: "artist_album_name_unique")
   @@index([artistId])
   @@map("albums")
 }
@@ -133,4 +138,11 @@ enum UserRole {
   ARTIST
   USER
   ADMIN
+}
+
+enum ContentStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
 }

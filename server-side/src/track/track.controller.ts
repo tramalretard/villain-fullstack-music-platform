@@ -27,7 +27,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Post()
+  @Post('add')
   @UseInterceptors(FileInterceptor('audio'))
   async createTrack(
     @UploadedFile() file: Express.Multer.File,
@@ -37,7 +37,7 @@ export class TrackController {
     return this.trackService.createTrackWithAudioFileService(dto, file, userId);
   }
 
-  @Auth(UserRole.ARTIST || UserRole.ADMIN)
+  @Auth(UserRole.ARTIST)
   @Patch(':id')
   async updateTrack(
     @Param('id') trackId: string,
@@ -47,7 +47,7 @@ export class TrackController {
     return this.trackService.updateTrackService(trackId, dto, userId);
   }
 
-  @Auth(UserRole.ARTIST || UserRole.ADMIN)
+  @Auth(UserRole.ARTIST)
   @Delete(':id')
   async deleteTrack(
     @Param('id') trackId: string,
@@ -78,6 +78,29 @@ export class TrackController {
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.trackService.updateImageService(trackId, userId, file);
+    return this.trackService.updateImageTrackService(trackId, userId, file);
+  }
+
+  @Auth(UserRole.ARTIST)
+  @Post(':id/publish')
+  async submitForPublication(
+    @Param('id') trackId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.trackService.submitForPublicationService(trackId, userId);
+  }
+
+  @Auth(UserRole.ARTIST)
+  @Patch(':trackId/assign-to/:albumId')
+  async assignTrackToAlbum(
+    @Param('trackId') trackId: string,
+    @Param('albumId') albumId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.trackService.assignTrackToAlbumService(
+      trackId,
+      albumId,
+      userId,
+    );
   }
 }
