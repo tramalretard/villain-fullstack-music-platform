@@ -1,10 +1,12 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { PlaylistDto } from './dto/playlist.dto';
+import { PrismaClientKnownRequestError } from 'prisma/generated/runtime/library';
 
 const MARKED_TRACKS_PLAYLIST_NAME = 'Отмеченные треки';
 
@@ -188,19 +190,28 @@ export class PlaylistService {
       );
     }
 
-    return this.prisma.playlist.update({
-      where: { id: playlistId },
-      data: {
-        tracks: {
-          create: {
-            track: {
-              connect: { id: trackId },
+    try {
+      return await this.prisma.playlist.update({
+        where: { id: playlistId },
+        data: {
+          tracks: {
+            create: {
+              track: { connect: { id: trackId } },
             },
           },
         },
-      },
-    });
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Этот трек уже добавлен в этот плейлист');
+      }
+      throw error;
+    }
   }
+
   async removeTrackFromPlaylistService(
     playlistId: string,
     trackId: string,
