@@ -33,8 +33,10 @@ model User {
 model ArtistProfile {
   id String @id @default(cuid())
 
-  listener Int    @default(0)
-  imageSrc String @default("/uploads/no-artist-image.png")
+  listener    Int     @default(0)
+  displayName String
+  bio         String?
+  imageSrc    String  @default("/uploads/no-artist-image.png")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique @map("user_id")

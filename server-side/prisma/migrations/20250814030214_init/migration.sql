@@ -19,6 +19,8 @@ CREATE TABLE "users" (
 CREATE TABLE "artist_profiles" (
     "id" TEXT NOT NULL,
     "listener" INTEGER NOT NULL DEFAULT 0,
+    "displayName" TEXT NOT NULL,
+    "bio" TEXT,
     "imageSrc" TEXT NOT NULL DEFAULT '/uploads/no-artist-image.png',
     "user_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
