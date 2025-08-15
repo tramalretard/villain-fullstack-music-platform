@@ -37,7 +37,7 @@ export class UserService {
     });
   }
 
-  async updateAvatar(userId: string, avatarFile: Express.Multer.File) {
+  async updateAvatarService(userId: string, avatarFile: Express.Multer.File) {
     const { url } = await this.fileService.saveFile(avatarFile, 'avatars');
 
     return this.prisma.user.update({

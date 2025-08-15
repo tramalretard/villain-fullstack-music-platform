@@ -21,7 +21,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
-  @Get(':id')
+  @Get('get-by/:id')
   async getById(@Param('id') albumId: string) {
     return this.albumService.getAlbumByIdService(albumId);
   }
@@ -33,7 +33,7 @@ export class AlbumController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch(':id')
+  @Patch('update/:id')
   async updateAlbum(
     @Param('id') albumId: string,
     @CurrentUser('id') userId: string,
@@ -43,7 +43,7 @@ export class AlbumController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Delete(':id')
+  @Delete('delete/:id')
   async deleteAlbum(
     @Param('id') albumId: string,
     @CurrentUser('id') userId: string,
@@ -52,7 +52,7 @@ export class AlbumController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch(':id/image')
+  @Patch('image/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateImageAlbum(
     @Param('id') albumId: string,
@@ -63,11 +63,11 @@ export class AlbumController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Post(':id/publish')
+  @Post('publish/:id')
   async submitForPublication(
     @Param('id') albumId: string,
     @CurrentUser('id') userId: string,
   ) {
-    return this.albumService.submitForPublication(albumId, userId);
+    return this.albumService.submitForPublicationService(albumId, userId);
   }
 }

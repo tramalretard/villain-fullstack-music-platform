@@ -125,7 +125,7 @@ export class AlbumService {
     });
   }
 
-  async submitForPublication(albumId: string, userId: string) {
+  async submitForPublicationService(albumId: string, userId: string) {
     const [album, artistProfile] = await Promise.all([
       this.prisma.album.findUnique({ where: { id: albumId } }),
       this.prisma.artistProfile.findUnique({ where: { userId } }),

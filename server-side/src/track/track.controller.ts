@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
-  @Get(':id')
+  @Get('get-by/:id')
   async getTrackById(@Param('id') trackId: string) {
     return this.trackService.getTrackByIdService(trackId);
   }
@@ -38,7 +38,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch(':id')
+  @Patch('update/:id')
   async updateTrack(
     @Param('id') trackId: string,
     @Body() dto: UpdateTrackDto,
@@ -48,7 +48,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Delete(':id')
+  @Delete('delete/:id')
   async deleteTrack(
     @Param('id') trackId: string,
     @CurrentUser('id') userId: string,
@@ -56,13 +56,13 @@ export class TrackController {
     return this.trackService.deleteTrackService(trackId, userId);
   }
 
-  @Post(':id/listen')
+  @Post('listen/:id')
   async incrementListenCount(@Param('id') trackId: string) {
     return this.trackService.incrementListenCountService(trackId);
   }
 
   @Auth()
-  @Post(':id/mark')
+  @Post('mark/:id')
   async markTrackAsFavorite(
     @Param('id') trackId: string,
     @CurrentUser('id') userId: string,
@@ -71,7 +71,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch(':id/image')
+  @Patch('image/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateImage(
     @Param('id') trackId: string,
@@ -82,7 +82,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Post(':id/publish')
+  @Post('publish/:id')
   async submitForPublication(
     @Param('id') trackId: string,
     @CurrentUser('id') userId: string,
@@ -91,7 +91,7 @@ export class TrackController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch(':trackId/assign-to/:albumId')
+  @Patch(':trackId/to/:albumId')
   async assignTrackToAlbum(
     @Param('trackId') trackId: string,
     @Param('albumId') albumId: string,

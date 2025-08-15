@@ -20,7 +20,7 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
-  @Get(':id')
+  @Get('get-by/:id')
   async getPublicProfile(@Param('id') artistId: string) {
     return this.artistService.getPublicProfileService(artistId);
   }
@@ -32,7 +32,7 @@ export class ArtistController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch('profile')
+  @Patch('/update')
   async updateProfile(
     @CurrentUser('id') userId: string,
     @Body() dto: UpdateArtistDto,
@@ -41,7 +41,7 @@ export class ArtistController {
   }
 
   @Auth(UserRole.ARTIST)
-  @Patch('profile/image')
+  @Patch('image')
   @UseInterceptors(FileInterceptor('image'))
   async updateProfileImage(
     @CurrentUser('id') userId: string,

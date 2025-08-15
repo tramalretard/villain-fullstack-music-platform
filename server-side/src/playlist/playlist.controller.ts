@@ -18,13 +18,13 @@ export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 
   @Auth()
-  @Get('/by-id/:id')
+  @Get('get-by/:id')
   async getPlaylistById(@Param('id') id: string) {
     return this.playlistService.getPlaylistByIdService(id);
   }
 
   @Auth()
-  @Get('my')
+  @Get('get-my')
   async getMyPlaylists(@CurrentUser('id') userId: string) {
     return this.playlistService.getMyPlaylistsService(userId);
   }
@@ -39,7 +39,7 @@ export class PlaylistController {
   }
 
   @Auth()
-  @Delete(':id')
+  @Delete('delete/:id')
   async deletePlaylist(
     @Param('id') id: string,
     @CurrentUser('id') currentUserId: string,
@@ -48,7 +48,7 @@ export class PlaylistController {
   }
 
   @Auth()
-  @Patch(':id')
+  @Patch('update/:id')
   async updatePlaylist(
     @Param('id') playlistId: string,
     @Body() dto: PlaylistDto,
@@ -62,7 +62,7 @@ export class PlaylistController {
   }
 
   @Auth()
-  @Post('add-track/marked')
+  @Post('add/marked')
   async addTrackToMarked(
     @CurrentUser('id') userId: string,
     @Body() dto: AddTrackDto,
@@ -74,7 +74,7 @@ export class PlaylistController {
   }
 
   @Auth()
-  @Delete('remove-track/marked')
+  @Delete('remove/marked')
   async removeTrackFromMarked(
     @CurrentUser('id') userId: string,
     @Body() dto: AddTrackDto,
