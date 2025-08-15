@@ -42,12 +42,16 @@ export class ArtistController {
 
   @Auth(UserRole.ARTIST)
   @Patch('image')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('artist-avatar'))
   async updateProfileImage(
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (!file) throw new BadRequestException('Файл не был предоставлен');
+    if (!file)
+      throw new BadRequestException(
+        'Файл не был предоставлен в поле "artist-avatar"',
+      );
+
     return this.artistService.updateProfileImageService(userId, file);
   }
 }

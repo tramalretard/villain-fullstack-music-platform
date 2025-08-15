@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Patch,
@@ -21,6 +22,10 @@ export class UserController {
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('Файл не был предоставлен в поле "avatar"');
+    }
+
     return this.userService.updateAvatarService(userId, file);
   }
 }

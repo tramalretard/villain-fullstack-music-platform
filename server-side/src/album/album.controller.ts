@@ -8,6 +8,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -53,12 +54,18 @@ export class AlbumController {
 
   @Auth(UserRole.ARTIST)
   @Patch('image/:id')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('album-covers'))
   async updateImageAlbum(
     @Param('id') albumId: string,
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException(
+        'Файл не был предоставлен в поле "album-covers"',
+      );
+    }
+
     return this.albumService.updateImageAlbumService(albumId, userId, file);
   }
 

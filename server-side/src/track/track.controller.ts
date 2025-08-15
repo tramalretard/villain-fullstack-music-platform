@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -34,6 +35,10 @@ export class TrackController {
     @Body() dto: CreateTrackDto,
     @CurrentUser('id') userId: string,
   ) {
+    if (!file) {
+      throw new BadRequestException('Файл не был предоставлен в поле "audio"');
+    }
+
     return this.trackService.createTrackWithAudioFileService(dto, file, userId);
   }
 
@@ -72,12 +77,18 @@ export class TrackController {
 
   @Auth(UserRole.ARTIST)
   @Patch('image/:id')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('track-covers'))
   async updateImage(
     @Param('id') trackId: string,
     @CurrentUser('id') userId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException(
+        'Файл не был предоставлен в поле "track-covers"',
+      );
+    }
+
     return this.trackService.updateImageTrackService(trackId, userId, file);
   }
 
