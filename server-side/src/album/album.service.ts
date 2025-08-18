@@ -125,6 +125,71 @@ export class AlbumService {
     });
   }
 
+  async markAlbumAsFavoriteService(albumId: string, userId: string) {
+    const album = await this.prisma.album.findUnique({
+      where: { id: albumId },
+    });
+
+    if (!album) {
+      throw new NotFoundException('Альбом не найден');
+    }
+
+    const isFavorited = await this.prisma.album.findFirst({
+      where: {
+        id: albumId,
+        favoritedBy: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    if (isFavorited) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          favoriteAlbums: {
+            disconnect: { id: albumId },
+          },
+        },
+      });
+      return { message: 'Альбом удален' };
+    } else {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          favoriteAlbums: {
+            connect: { id: albumId },
+          },
+        },
+      });
+      return { message: 'Альбом добавлен' };
+    }
+  }
+
+  async getMyFavoriteAlbumsService(userId: string) {
+    const favoriteAlbums = await this.prisma.album.findMany({
+      where: {
+        favoritedBy: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        artist: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+    });
+
+    return favoriteAlbums;
+  }
+
   async submitForPublicationService(albumId: string, userId: string) {
     const [album, artistProfile] = await Promise.all([
       this.prisma.album.findUnique({ where: { id: albumId } }),

@@ -69,6 +69,21 @@ export class AlbumController {
     return this.albumService.updateImageAlbumService(albumId, userId, file);
   }
 
+  @Auth()
+  @Post('favorite/:id')
+  async markAlbumAsFavorite(
+    @Param('id') albumId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.albumService.markAlbumAsFavoriteService(albumId, userId);
+  }
+
+  @Auth()
+  @Get('favorites/my')
+  async getMyFavoriteAlbums(@CurrentUser('id') userId: string) {
+    return this.albumService.getMyFavoriteAlbumsService(userId);
+  }
+
   @Auth(UserRole.ARTIST)
   @Post('publish/:id')
   async submitForPublication(
