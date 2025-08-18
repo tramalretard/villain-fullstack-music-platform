@@ -75,6 +75,13 @@ server-side/.env.test.local
 server-side/.env.production.local
 server-side/.env.local
 
+# dotenv environment variable files server
+client-side/.env
+client-side/.env.development.local
+client-side/.env.test.local
+client-side/.env.production.local
+client-side/.env.local
+
 # temp directory server
 server-side/.temp
 server-side/.tmp
