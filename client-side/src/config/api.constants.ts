@@ -66,15 +66,12 @@ export const API_URL = {
 		submitForPublication: (id: string) => API_URL.root(`/album/publish/${id}`),
 	},
 
-	files: {
-		root: (path = '') => API_URL.root(`/files${path}`),
-		uploads: {
-			avatars: (fileName: string) => `/uploads/avatars/${fileName}`,
-			albumCovers: (fileName: string) => `/uploads/album-covers/${fileName}`,
-			artistProfiles: (fileName: string) =>
-				`/uploads/artist-profiles/${fileName}`,
-			trackCovers: (fileName: string) => `/uploads/track-covers/${fileName}`,
-			tracks: (filePath: string) => `/uploads/tracks/${filePath}`,
-		},
+	uploads: {
+		avatars: (fileName: string) => `/uploads/avatars/${fileName}`,
+		albumCovers: (fileName: string) => `/uploads/album-covers/${fileName}`,
+		artistProfiles: (fileName: string) =>
+			`/uploads/artist-profiles/${fileName}`,
+		trackCovers: (fileName: string) => `/uploads/track-covers/${fileName}`,
+		tracks: (filePath: string) => `/uploads/tracks/${filePath}`,
 	},
 }
