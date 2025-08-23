@@ -37,7 +37,7 @@ export const API_URL = {
 
 	playlists: {
 		getById: (id: string) => API_URL.root(`/playlist/get-by/${id}`),
-		getMyPlaylists: (id: string) => API_URL.root(`/playlist/get-my`),
+		getMyPlaylists: () => API_URL.root(`/playlist/get-my`),
 		createPlaylist: () => API_URL.root('/playlist/create'),
 		deletePlaylist: (id: string) => API_URL.root(`/playlist/delete/${id}`),
 		updatePlaylist: (id: string) => API_URL.root(`/playlist/update/${id}`),
@@ -53,6 +53,7 @@ export const API_URL = {
 		getById: (id: string) => API_URL.root(`/artist/get-by/${id}`),
 		updateProfile: () => API_URL.root('/artist/update'),
 		updateImageProfile: () => API_URL.root('/artist/image'),
+		becomeArtist: () => API_URL.root(`/artist/become`),
 	},
 
 	albums: {
@@ -73,5 +74,9 @@ export const API_URL = {
 			`/uploads/artist-profiles/${fileName}`,
 		trackCovers: (fileName: string) => `/uploads/track-covers/${fileName}`,
 		tracks: (filePath: string) => `/uploads/tracks/${filePath}`,
+	},
+
+	files: {
+		upload: () => API_URL.root('/files/upload'),
 	},
 }
