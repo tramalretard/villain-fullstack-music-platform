@@ -39,7 +39,7 @@ export default function RootLayout({
 						>
 							{children}
 							<Toaster />
-							<ButtonToggleTheme className="fixed bottom-5 left-5 z-50" />
+							<ButtonToggleTheme className="fixed bottom-5 right-5 z-50" />
 						</ThemeProvider>
 					</Providers>
 				</Container>

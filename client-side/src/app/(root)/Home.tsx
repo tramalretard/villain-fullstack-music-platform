@@ -1,6 +1,5 @@
 'use client'
 
-import { TopBar } from '@/components/top-bar'
 import { saveTokenInStorage } from '@/services/auth/access-token.service'
 import { useSearchParams } from 'next/navigation'
 import React from 'react'
@@ -14,9 +13,5 @@ export const Home = () => {
 		if (accessToken) saveTokenInStorage(accessToken)
 	}, [searchParams])
 
-	return (
-		<>
-			<TopBar />
-		</>
-	)
+	return <>Home</>
 }

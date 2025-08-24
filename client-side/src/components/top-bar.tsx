@@ -13,7 +13,7 @@ export const TopBar: React.FC<Props> = ({ className }) => {
 	return (
 		<div
 			className={cn(
-				'flex items-center justify-between bg-foreground/5 p-3.5 rounded-sm',
+				'flex items-center justify-between bg-foreground/3 p-3.5 rounded-sm mb-2.5',
 				className
 			)}
 		>
