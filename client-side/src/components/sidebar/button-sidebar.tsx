@@ -16,7 +16,7 @@ export const ButtonSidebar: React.FC<Props> = ({
 	return (
 		<Button
 			onClick={() => setIsCollapsed(!isCollapsed)}
-			className="flex justify-center items-center min-h-210 w-12 bg-foreground/3 rounded-l-none hover:bg-foreground/6"
+			className="flex justify-center items-center h-187 w-12 bg-foreground/3 rounded-l-none hover:bg-foreground/6 focus-visible:none"
 		>
 			<ChevronLeft
 				strokeWidth={1}

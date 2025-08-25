@@ -8,14 +8,13 @@ export const PUBLIC_URL = {
 	track: (id: string) => `/track/${id}`,
 	album: (id: string) => `/album/${id}`,
 	artist: (id: string) => `/artist/${id}`,
-	playlist: (id: string) => `/playlist/${id}`,
 
 	profile: '/profile',
 
 	library: {
-		home: '/library',
-		favoriteAlbums: '/library/albums',
 		myPlaylists: '/library/playlists',
+		favoriteTracks: '/library/tracks',
+		favoriteAlbums: '/library/albums',
 	},
 
 	studio: {

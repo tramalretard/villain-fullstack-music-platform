@@ -9,7 +9,7 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Form } from '@/components/ui/form'
-import { useAuthForm } from '@/hooks/useAuthForm'
+import { useAuthForm } from '@/hooks/use-auth-form'
 import React from 'react'
 import { AuthFields } from './AuthFields'
 import { SocialMedia } from './SocialMedia'
